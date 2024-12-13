@@ -1,0 +1,47 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ */
+package com.controllers;
+
+import com.ejb.MainBeanLocal;
+import jakarta.servlet.RequestDispatcher;
+import java.io.IOException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import model.cart;
+import model.product;
+
+/**
+ *
+ * @author Pomy
+ */
+@WebServlet(urlPatterns = {"/products"})
+public class products extends HttpServlet {
+
+    protected void service(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            InitialContext ic = new InitialContext();
+            MainBeanLocal EJB_Bean = (MainBeanLocal) ic.lookup("java:global/JNDI_EJB_DEMO/MainBean!com.ejb.MainBeanLocal");
+            List<cart> cartList = EJB_Bean.getcartList();
+            
+            HttpSession session = request.getSession();
+            session.setAttribute("EJB-Bean", EJB_Bean);
+            
+            List<product> products = EJB_Bean.getAllproducts();
+            request.setAttribute("products", products);
+            RequestDispatcher disp = request.getRequestDispatcher("shop.jsp");
+            disp.forward(request, response);
+        } catch (NamingException ex) {
+            ex.printStackTrace();
+        }
+    }
+}

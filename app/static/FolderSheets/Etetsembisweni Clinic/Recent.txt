@@ -1,0 +1,162 @@
+import 'package:flutter/material.dart';
+import 'package:rstcafe/admin_part/screens/inner_screens/selectedCategoryPage.dart';
+import 'package:rstcafe/admin_part/widgets/categoryCard.dart';
+import 'package:rstcafe/common/color_extension.dart';
+import '../models/category.dart';
+import '../providers/utils.dart';
+import '../widgets/categoryBottomBar.dart';
+
+class CategoryListPage extends StatefulWidget {
+  CategoryListPage({super.key});
+
+  @override
+  State<CategoryListPage> createState() => _CategoryListPageState();
+}
+
+class _CategoryListPageState extends State<CategoryListPage> {
+  var utils = Utils();
+
+  @override
+  Widget build(BuildContext context) {
+    List<Category> categories = utils.getMockedCategories();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Product Categories',
+          style: TextStyle(
+              color: TColor.primary, fontWeight: FontWeight.w800, fontSize: 20),
+        ),
+        elevation: 0.0,
+      ),
+      body: Container(
+          child: Stack(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: Text(
+                  "Select Food Category",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: TColor.placeholder, fontSize: 16),
+                ),
+              ),
+              Expanded(
+                  child: ListView.builder(
+                      padding: const EdgeInsets.only(bottom: 120),
+                      itemCount: categories.length,
+                      itemBuilder: (context, index) {
+                        return CategroyCard(
+                          category: categories[index],
+                          onCardClick: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SelectedCategoryPage(
+                                          selectedcategory: utils
+                                              .getMockedCategories()[index],
+                                        )));
+                          },
+                        );
+                      }))
+            ],
+          ),
+          const Positioned(
+              bottom: 0, left: 0, right: 0, child: CategoryBottomBar())
+        ],
+      )),
+    );
+  }
+}
+
+//// Above is the category list page
+
+
+//// Below is the selected category page
+import 'package:flutter/material.dart';
+import 'package:rstcafe/admin_part/widgets/categoryIcon.dart';
+import '../../../common/color_extension.dart';
+import '../../models/category.dart';
+import '../../providers/utils.dart';
+import '../../widgets/categoryBottomBar.dart';
+
+class SelectedCategoryPage extends StatefulWidget {
+  Category selectedcategory;
+
+  SelectedCategoryPage({super.key, required this.selectedcategory});
+
+  @override
+  State<SelectedCategoryPage> createState() => _SelectedCategoryPageState();
+}
+
+class _SelectedCategoryPageState extends State<SelectedCategoryPage> {
+  // var utils = Utils();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CategoryIcon(
+                color: widget.selectedcategory.color,
+                iconName: widget.selectedcategory.icon,
+              ),
+              const SizedBox(width: 10),
+              Text(
+                widget.selectedcategory.name.toString(),
+                style: TextStyle(
+                    color: widget.selectedcategory.color, fontSize: 20),
+              )
+            ],
+          ),
+          const SizedBox(height: 30),
+          Expanded(
+              child: GridView.count(
+            crossAxisCount: 2,
+            children: List.generate(
+                widget.selectedcategory.subCategories!.length, (index) {
+              return GestureDetector(
+                onTap: () {},
+                child: Container(
+                  child: Column(
+                    children: [
+                      ClipOval(
+                        child: Image.asset(
+                          'assets/img/' +
+                              widget.selectedcategory.subCategories![index]
+                                  .imgName
+                                  .toString() +
+                              '.png',
+                          fit: BoxFit.cover,
+                          width: 100,
+                          height: 100,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        widget.selectedcategory.subCategories![index].name
+                            .toString(),
+                        style: TextStyle(color: widget.selectedcategory.color),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            }),
+          ))
+        ],
+      ),
+      bottomNavigationBar: BottomAppBar(
+        surfaceTintColor: TColor.white,
+        elevation: 0,
+        child: const CategoryBottomBar(),
+      ),
+    );
+  }
+}
+

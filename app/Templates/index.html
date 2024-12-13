@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>{% block title %}Dashboard - CMIS - Data.FI{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="../static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="../static/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="../static/assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="../static/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="../static/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="../static/assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="../static/assets/css/style.css" rel="stylesheet">
+    <link href="../static/css/style.css" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+
+<body>
+
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+
+        <div class="d-flex align-items-center justify-content-between">
+            <a href="/home" class="logo d-flex align-items-center">
+                <span class="d-none d-lg-block">Data.FI Registry</span>
+            </a>
+            <i class="bi bi-list toggle-sidebar-btn"></i>
+        </div>
+        <!-- End Logo -->
+
+        <div class="search-bar">
+            <form class="search-form d-flex align-items-center" method="POST" action="#">
+                <input type="text" name="query" placeholder="Search" title="Enter search keyword">
+                <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+            </form>
+        </div>
+        <!-- End Search Bar -->
+
+        <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+
+                <li class="nav-item d-block d-lg-none">
+                    <a class="nav-link nav-icon search-bar-toggle " href="#">
+                        <i class="bi bi-search"></i>
+                    </a>
+                </li>
+                <!-- End Search Icon-->
+
+                <li class="nav-item dropdown pe-3">
+
+                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle" style="font-size: larger;"></i>
+                        <span class="d-none d-md-block dropdown-toggle ps-2">{{user.username}}</span>
+                    </a>
+                    <!-- End Profile Iamge Icon -->
+
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                        <li class="dropdown-header">
+                            <h6>{{user.username}}</h6>
+                            <span>{{user.role}}</span>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li id="my-profile">
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <i class="bi bi-person"></i>
+                                <span>My Profile</span>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="/logout">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Sign Out</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                    <!-- End Profile Dropdown Items -->
+                </li>
+                <!-- End Profile Nav -->
+
+            </ul>
+        </nav>
+        <!-- End Icons Navigation -->
+
+    </header>
+    <!-- End Header -->
+
+    <!-- ======= Sidebar ======= -->
+    <aside id="sidebar" class="sidebar">
+
+        <ul class="sidebar-nav" id="sidebar-nav">
+
+            <li class="nav-item">
+                <a class="nav-link " href="/home">
+                    <i class="bi bi-grid"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <!-- End Dashboard Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-people-fill" style="font-size: 1rem;"></i><span>Users</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li class="users" id="users">
+                        <a href="#">
+                            <i class="bi bi-circle"></i><span>View Users</span>
+                        </a>
+                    </li>
+                    <li id="addUser">
+                        <a href="#">
+                            <i class="bi bi-circle"></i><span>Add User</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- End Forms Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-menu-button-wide"></i><span>Weekly Logs</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li id="viewWeekLog">
+                        <a href="#">
+                            <i class="bi bi-circle"></i><span>View Week Activities</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- Weekly Logs -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-journal-text"></i><span>Scanned Sheets</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li id="sheet-link">
+                        <a href="#">
+                            <i class="bi bi-circle"></i><span>Open Folder</span>
+                        </a>
+                    </li>
+                    <li id="createFolder">
+                        <a href="#">
+                            <i class="bi bi-circle"></i><span>Add New</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-heading">Quick Links</li>
+
+            <li class="nav-item" id="record-meeting">
+                <a class="nav-link collapsed" href="#">
+                    <i class="bi bi-layout-text-window-reverse"></i><span>Record Meeting</span>
+                </a>
+            </li>
+            <!-- End Tables Nav -->
+
+            <li id="filter-meeting" class="nav-item">
+                <a class="nav-link collapsed" href="#">
+                    <i class="bi bi-filter-square"></i>
+                    <span>Filter Records</span>
+                </a>
+            </li>
+            <!-- End Filter Page Nav -->
+
+        </ul>
+
+    </aside>
+    <!-- End Sidebar-->
+
+    <main id="main" class="main">
+        {% block pagetitle %}
+        <div class="pagetitle">
+            <h1>Dashboard</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/home">Home</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </nav>
+        </div>
+        <!-- End Page Title -->
+        {% endblock %}
+
+        <section class="section dashboard">
+            <div class="row">
+                {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+                <ul>
+                    {% for category, message in messages %}
+                    <li class="flash-message {{ category }}">
+                        {{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %} {% endwith %}
+                <!-- Flash messages -->
+
+                {% block content %}
+
+                <!-- Left side columns -->
+                <div class="col-lg-8" id="col-lg-8">
+                    <div class="row">
+                        {% for meeting in meetings %}
+                        <!-- Sales Card -->
+                        <div class="col-xxl-4 col-md-6">
+                            <div class="card info-card sales-card">
+
+                                <div class="filter">
+                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i
+                                            class="bi bi-three-dots"></i></a>
+                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                        <li class="dropdown-header text-start">
+                                            <h6>Action</h6>
+                                        </li>
+
+                                        <li onclick="getMeetingDetails(`{{meeting.facility_id}}`)"><a
+                                                class="dropdown-item" href="#">Overview</a></li>
+                                        <li onclick="getCadra(`{{meeting.facility_id}}`)" id="" data-bs-toggle="modal"
+                                            data-bs-target="#cadra-modal"><a class="dropdown-item" href="#">View
+                                                Cadas</a></li>
+                                        <li id="removedata-{{meeting.facility_id}}"><a class="dropdown-item"
+                                                href="/remove_record/{{meeting.facility_id}}">Remove</a></li>
+                                    </ul>
+                                </div>
+
+                                <div class="card-body">
+                                    <h5 class="card-title">{{meeting.venue}}<span> | {{meeting.activity}}</span></h5>
+
+                                    <div class="d-flex align-items-center">
+                                        <div
+                                            class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-layout-text-window-reverse"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6>{{meeting.date}}</h6>
+                                            <span class="text-success small pt-1 fw-bold">{{meeting.time}}</span> <span
+                                                class="text-muted small pt-2 ps-1">Time Held</span>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- End Sales Card -->
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- End Left side columns -->
+
+                <!-- Right side columns -->
+                <div class="col-lg-4" id="col-lg-4">
+
+                    <!-- Recent Activity -->
+                    <div class="card">
+
+                        <div class="card-body">
+                            <h5 class="card-title">This Week Activities <span>| {{week}}-Week</span></h5>
+
+                            <div class="activity">
+                                {% for schedule in weekSchedule %}
+                                {% if schedule['year'] == year %}
+                                <div class="activity-item d-flex">
+                                    <div class="activite-label">{{schedule['date']}} {{schedule['day']}}</div>
+                                    {% if schedule['day'] == 'Mon' %}
+                                    <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i> {%
+                                    elif schedule['day'] == 'Tue' %}
+                                    <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i> {%
+                                    elif schedule['day'] == 'Wed' %}
+                                    <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i> {%
+                                    elif schedule['day'] == 'Thu'%}
+                                    <i class='bi bi-circle-fill activity-badge text-info align-self-start'></i> {% elif
+                                    schedule['day'] == 'Fri' %}
+                                    <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i> {%
+                                    else %}
+                                    <i class='bi bi-circle-fill activity-badge text-muted align-self-start'></i> {%
+                                    endif %}
+                                    <div class="activity-content">
+                                        {{schedule['event']}}
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <!-- End activity item-->
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- End Recent Activity -->
+                </div>
+                <!-- End Right side columns -->
+
+                <!-- All Users View Start Here -->
+                <div class="usersView" id="usersView">
+                    <div class="row">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Users</h5>
+
+                                <!-- List group with custom content -->
+                                <ol class="list-group list-group-numbered" id="user-list">
+                                    <!-- populate users here -->
+                                </ol>
+                                <!-- End with custom content -->
+
+                                <div class="modal fade" id="verticalycentered" tabindex="-1">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Update User</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <!-- Browser Default Validation -->
+                                                    <form class="row g-3">
+                                                        <input type="hidden" id="userId">
+                                                        <div class="col-md-4">
+                                                            <label for="user_name" class="form-label">First
+                                                                name</label>
+                                                            <input type="text" class="form-control" name="user_name"
+                                                                id="user_name" required>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <label for="user_lastname" class="form-label">Last
+                                                                name</label>
+                                                            <input type="text" class="form-control" name="user_lastname"
+                                                                id="user_lastname" required>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <label for="user_email" class="form-label">Email</label>
+                                                            <div class="input-group">
+                                                                <span class="input-group-text"
+                                                                    id="inputGroupPrepend2">@</span>
+                                                                <input type="email" class="form-control"
+                                                                    name="user_email" id="user_email"
+                                                                    aria-describedby="inputGroupPrepend2" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="validationDefault03"
+                                                                class="form-label">Role</label>
+                                                            <input type="text" class="form-control" name="user_role"
+                                                                id="user_role" required>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="validationDefault03" class="form-label">Phone
+                                                                Number</label>
+                                                            <input type="number" class="form-control" name="user_phone"
+                                                                id="user_phone" required>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <label for="user_country" class="form-label">Country</label>
+                                                            <input type="text" class="form-control" name="user_country"
+                                                                id="user_country" required>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <label for="user_company" class="form-label">Company</label>
+                                                            <input type="text" class="form-control" name="user_company"
+                                                                id="user_company" required>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <label for="user_address" class="form-label">Address</label>
+                                                            <input type="text" class="form-control" name="user_address"
+                                                                id="user_address" required>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <button type="button" id="saveUserChange"
+                                                                class="btn btn-primary" data-bs-dismiss="modal">Save
+                                                                changes</button>
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </form>
+                                                    <!-- End Browser Default Validation -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Vertically centered Modal -->
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- All Users View ends Here -->
+
+                <!-- adding user start here -->
+                <div class="newUser" id="newUser">
+                    <div class="row">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Add New User</h5>
+
+                                <!-- Browser Default Validation -->
+                                <form class="row g-3">
+                                    <div class="col-md-4">
+                                        <label for="validationDefault01" class="form-label">First name<i
+                                                class="bi bi-star" style="color: red;"></i></label>
+                                        <input type="text" class="form-control" id="name" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="validationDefault02" class="form-label">Last name<i
+                                                class="bi bi-star" style="color: red;"></i></label>
+                                        <input type="text" class="form-control" id="lastname" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="validationDefaultUsername" class="form-label">Email<i
+                                                class="bi bi-star" style="color: red;"></i></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="inputGroupPrepend2">@</span>
+                                            <input type="email" class="form-control" id="email"
+                                                aria-describedby="inputGroupPrepend2" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="validationDefault03" class="form-label">Password<i
+                                                class="bi bi-star" style="color: red;"></i></label>
+                                        <input type="password" class="form-control" id="password" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="validationDefault03" class="form-label">Role<i class="bi bi-star"
+                                                style="color: red;"></i></label>
+                                        <input type="text" class="form-control" id="role" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="validationDefault03" class="form-label">Phone Number<i
+                                                class="bi bi-star" style="color: red;"></i></label>
+                                        <input type="number" class="form-control" id="phone" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="validationDefault03" class="form-label">Country<i class="bi bi-star"
+                                                style="color: red;"></i></label>
+                                        <input type="text" class="form-control" id="country" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="validationDefault03" class="form-label">Company<i class="bi bi-star"
+                                                style="color: red;"></i></label>
+                                        <input type="text" class="form-control" id="company" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="validationDefault03" class="form-label">Address<i class="bi bi-star"
+                                                style="color: red;"></i></label>
+                                        <input type="text" class="form-control" id="address" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <button class="btn btn-primary" id="submitUserButton"
+                                            type="button">Submit</button>
+                                    </div>
+                                </form>
+                                <!-- End Browser Default Validation -->
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Adding user ends here -->
+
+                <!-- adding week logs start here -->
+                <div class="weekLogs" id="weekLogs">
+                    <div class="row">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Update Week Schedule / Add New Activity</h5>
+
+                                <!-- Floating Labels Form -->
+                                <form class="row g-3">
+                                    <input type="hidden" id="activityId">
+                                    <div class="col-md-12">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="user" name="modifiedby"
+                                                value="{{user.username}}" placeholder="Your Name" disabled>
+                                            <label for="floatingName">Worked By:</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <select class="form-select" name="day" id="day" aria-label="State">
+                                                <option value="Monday">Monday</option>
+                                                <option value="Tuesday">Tuesday</option>
+                                                <option value="Wednesday">Wednesday</option>
+                                                <option value="Thursday">Thursday</option>
+                                                <option value="Friday">Friday</option>
+                                            </select>
+                                            <label for="floatingSelect">Week Day</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="date" class="form-control" name="calendar" id="calendar"
+                                                placeholder="Calendar">
+                                            <label for="floatingPassword">Calendar</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <textarea class="form-control" name="activities" placeholder="Activities"
+                                                id="activity" style="height: 100px;"></textarea>
+                                            <label for="floatingTextarea">Activities</label>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <button type="button" id="saveActivityChanges"
+                                            class="btn btn-primary">Save</button>
+                                        <button type="reset" id="reset" class="btn btn-secondary">Cancel</button>
+                                    </div>
+                                </form>
+                                <!-- End floating Labels Form -->
+
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Weekly Schedule Overview</h5>
+                                <!-- Primary Color Bordered Table -->
+                                <table class="table table-bordered border-primary">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Day</th>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Activities</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="row-list">
+                                        <!-- to populate table data -->
+                                    </tbody>
+                                </table>
+                                <!-- End Primary Color Bordered Table -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- adding week logs end here -->
+
+                <!-- New meeting records start here -->
+                <div class="facility_meeting" id="meeting-register">
+                    <div class="emblem">
+                        <img src="../static/images/eswatini.png" alt="pic"><br>
+                        <h3 style="font-weight: 700;">Data.FI Attendance Register</h3>
+                    </div><br>
+                    <div class="card">
+                        <div class="card-body">
+                            <form class="row g-3">
+                                <div class="col-md-12">
+                                    <label for="inputName5" class="form-label">Title</label>
+                                    <input type="text" class="form-control" id="meeting-title" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="inputEmail5" class="form-label">Region</label>
+                                    <input type="text" class="form-control" id="meeting-region" required>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="inputPassword5" class="form-label">Date</label>
+                                    <input type="date" class="form-control" id="meeting-date" required>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="inputPassword5" class="form-label">Time</label>
+                                    <input type="time" class="form-control" id="meeting-time" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="inputPassword5" class="form-label">Venue</label>
+                                    <select class="form-select" id="meeting-venue" aria-label="Default select example">
+                                        <option selected>-----------------:-----------------</option>
+                                        {% for facility in facilities %}
+                                        <option value="{{facility}}">{{facility}}</option>
+                                        {% endfor %}
+                                        </select>
+                                </div>
+                                <div class="text-center">
+                                    <button type="button" id="saveMeetingHeader" class="btn btn-primary">Save</button>
+                                    <button type="reset" id="refreshMeetingHeader"
+                                        class="btn btn-secondary">Reset</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- facilitators table form-->
+                    <div class="card" style="margin-top: 2rem;">
+                        <div class="card-body" style="overflow: auto;">
+                            <h5 class="card-title">Facilitators</h5>
+                            <!-- Bordered Table -->
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Lastname</th>
+                                        <th scope="col">Organization</th>
+                                        <th scope="col">Sex</th>
+                                        <th scope="col">Position</th>
+                                        <th scope="col">Phone Number</th>
+                                        <th scope="col">Email Address</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td><input type="text" id="f-name1"></td>
+                                        <td><input type="text" id="f-lastname1"></td>
+                                        <td><input type="text" id="f-organization1"></td>
+                                        <td class="sex_option">
+                                            <select id="f-sex1" style="height:1.8rem;">
+                                                <option value="none">-----:-----</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" id="f-position1"></td>
+                                        <td><input type="number" id="f-phone1"></td>
+                                        <td><input type="email" id="f-email1"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">2</th>
+                                        <td><input type="text" id="f-name2"></td>
+                                        <td><input type="text" id="f-lastname2"></td>
+                                        <td><input type="text" id="f-organization2"></td>
+                                        <td class="sex_option">
+                                            <select id="f-sex2" style="height:1.8rem;">
+                                                <option value="none">-----:-----</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" id="f-position2"></td>
+                                        <td><input type="number" id="f-phone2"></td>
+                                        <td><input type="email" id="f-email2"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">3</th>
+                                        <td><input type="text" id="f-name3"></td>
+                                        <td><input type="text" id="f-lastname3"></td>
+                                        <td><input type="text" id="f-organization3"></td>
+                                        <td class="sex_option">
+                                            <select id="f-sex3" style="height:1.8rem;">
+                                                <option value="none">-----:-----</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" id="f-position3"></td>
+                                        <td><input type="number" id="f-phone3"></td>
+                                        <td><input type="email" id="f-email3"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">4</th>
+                                        <td><input type="text" id="f-name4"></td>
+                                        <td><input type="text" id="f-lastname4"></td>
+                                        <td><input type="text" id="f-organization4"></td>
+                                        <td class="sex_option">
+                                            <select id="f-sex4" style="height:1.8rem;">
+                                                <option value="none">-----:-----</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" id="f-position4"></td>
+                                        <td><input type="number" id="f-phone4"></td>
+                                        <td><input type="email" id="f-email4"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">5</th>
+                                        <td><input type="text" id="f-name5"></td>
+                                        <td><input type="text" id="f-lastname5"></td>
+                                        <td><input type="text" id="f-organization5"></td>
+                                        <td class="sex_option">
+                                            <select id="f-sex5" style="height:1.8rem;">
+                                                <option value="none">-----:-----</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" id="f-position5"></td>
+                                        <td><input type="number" id="f-phone5"></td>
+                                        <td><input type="email" id="f-email5"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!-- End Bordered Table -->
+                        </div>
+                        <div class="text-center" style="margin: 1rem;">
+                            <button type="button" id="saveFacilitators" class="btn btn-primary">Save</button>
+                            <button type="button" id="resetFacilitators" class="btn btn-secondary">Reset</button>
+                        </div>
+                    </div>
+                    <!-- Participants table form-->
+                    <div class="card" style="margin-top: 2rem;">
+                        <div class="card-body" style="overflow: auto;">
+                            <h5 class="card-title">To be filled in by Meeting Partipants</h5>
+                            <!-- Bordered Table -->
+                            <table class="table table-bordered" style="overflow-y: auto;" id="t-body">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Lastname</th>
+                                        <th scope="col">Organization</th>
+                                        <th scope="col">Sex</th>
+                                        <th scope="col">Position</th>
+                                        <th scope="col">Phone Number</th>
+                                        <th scope="col">Email Address</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-rows">
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td><input type="text" id="name1"></td>
+                                        <td><input type="text" id="lastname1"></td>
+                                        <td><input type="text" id="organization1"></td>
+                                        <td class="sex_option">
+                                            <select id="sex1" style="height:1.8rem;">
+                                                <option value="none">-----:-----</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" id="position1"></td>
+                                        <td><input type="number" id="phone1"></td>
+                                        <td><input type="email" id="email1"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">2</th>
+                                        <td><input type="text" id="name2"></td>
+                                        <td><input type="text" id="lastname2"></td>
+                                        <td><input type="text" id="organization2"></td>
+                                        <td class="sex_option">
+                                            <select id="sex2" style="height:1.8rem;">
+                                                <option value="none">-----:-----</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" id="position2"></td>
+                                        <td><input type="number" id="phone2"></td>
+                                        <td><input type="email" id="email2"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">3</th>
+                                        <td><input type="text" id="name3"></td>
+                                        <td><input type="text" id="lastname3"></td>
+                                        <td><input type="text" id="organization3"></td>
+                                        <td class="sex_option">
+                                            <select id="sex3" style="height:1.8rem;">
+                                                <option value="none">-----:-----</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" id="position3"></td>
+                                        <td><input type="number" id="phone3"></td>
+                                        <td><input type="email" id="email3"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">4</th>
+                                        <td><input type="text" id="name4"></td>
+                                        <td><input type="text" id="lastname4"></td>
+                                        <td><input type="text" id="organization4"></td>
+                                        <td class="sex_option">
+                                            <select id="sex4" style="height:1.8rem;">
+                                                <option value="none">-----:-----</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" id="position4"></td>
+                                        <td><input type="number" id="phone4"></td>
+                                        <td><input type="email" id="email4"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">5</th>
+                                        <td><input type="text" id="name5"></td>
+                                        <td><input type="text" id="lastname5"></td>
+                                        <td><input type="text" id="organization5"></td>
+                                        <td class="sex_option">
+                                            <select id="sex5" style="height:1.8rem;">
+                                                <option value="none">-----:-----</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" id="position5"></td>
+                                        <td><input type="number" id="phone5"></td>
+                                        <td><input type="email" id="email5"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!-- End Bordered Table -->
+                        </div>
+                        <div class="action-buttons">
+                            <button type="button" class="badge rounded-pill bg-secondary" id="refreshParticipants"
+                                style="border: none; background: transparent;">Reset</button>
+                            <div class="addOrminus">
+                                <button type="button" id="add-row"
+                                    style="font-size: 2rem; border: none; background: transparent;"><i
+                                        class="bi bi-plus-circle-dotted"></i></button>
+                                <button type="button" id="deleteRow" class="badge rounded-pill bg-danger"
+                                    style="border: none; background: transparent;">Remove Last Row</button>
+                            </div>
+                            <button type="button" id="saveParticipants" style="border: none; background: transparent;"
+                                class="badge rounded-pill bg-success">Submit</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- New meeting records ends here -->
+
+                <!-- View Meetings start here -->
+                <div class="cadra" id="cadra">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Meeting Details</h5>
+                            <span class="badge bg-primary" id="m-title"></i></span>
+                            <span class="badge bg-secondary" id="m-region"></span>
+                            <span class="badge bg-success" id="m-date"></span>
+                            <span class="badge bg-warning text-dark" id="m-time"></span>
+                            <span class="badge bg-info text-dark" id="m-venue"></span>
+                        </div>
+                    </div>
+
+                    <!-- table of facilitators -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Facilitators</h5>
+
+                            <div class="facilitators" id="facilitators-list"
+                                style="display: flex; align-items: center; overflow-x: scroll;">
+                                <!-- facilitators will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- table of participants -->
+                    <div class="col-12">
+                        <div class="card recent-sales overflow-auto">
+
+                            <div class="filter">
+                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" id="actions-dropdown">
+                                    <!-- action buttons will appear here -->
+                                </ul>
+                            </div>
+
+                            <div class="card-body" id="table-participants">
+                                <h5 class="card-title">Participants <span>| Table</span></h5>
+                                <input type="search" id="datasearch" data-search placeholder="Search by Phone..."
+                                    style="float: right; margin-bottom: 0.5rem; width: 13rem;">
+                                <table id="participant-list" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Lastname</th>
+                                            <th scope="col">Organization</th>
+                                            <th scope="col">Sex</th>
+                                            <th scope="col">Position</th>
+                                            <th scope="col">Phone</th>
+                                            <th scope="col">Email</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- participants will be populated here -->
+                                    </tbody>
+                                    <tfoot>
+                                        <tr style="display: none;" class="hidden-row">
+                                            <th>Prepared by:</th>
+                                            <th>{{user.username}}</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- view Cadra start here -->
+                <div class="modal fade" id="cadra-modal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+
+                            <div class="col-lg-12">
+                                <button type="button" onclick="hideCadra()" style="margin: 0.5rem; font-size: medium;"
+                                    class="btn-close" id="close-modal-btn" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                                <div class="filter">
+                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i
+                                            class="bi bi-three-dots"></i></a>
+                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                        <li class="dropdown-header text-start">
+                                            <h6>Action</h6>
+                                        </li>
+                                        <li id="cadas-to-excel"><a class="dropdown-item" href="#"><i
+                                                    class="bi bi-file-earmark-spreadsheet"></i>As Excel</a></li>
+                                        <li id="cadas-to-word"><a class="dropdown-item" href="#"><i
+                                                    class="bi bi-file-earmark-pdf"></i>As PDF</a></li>
+                                        <li id="cadas-print"><a class="dropdown-item" href="#"><i
+                                                    class="bx bx-printer"></i>Print</a></li>
+                                    </ul>
+                                </div>
+                                <div class="card-body" id="card-body">
+                                    <h5 class="card-title" id="cadra-title"></h5>
+                                    <!-- Table with stripped rows -->
+                                    <table class="table" id="cadra-table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Position</th>
+                                                <th scope="col">Male</th>
+                                                <th scope="col">Female</th>
+                                                <th scope="col">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Cadra details to be populated here -->
+                                        </tbody>
+                                        <tfoot>
+                                            <tr class="hidden-row" hidden>
+                                                <th colspan="3">Prepared by:</th>
+                                                <th>{{user.username}}</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                    <!-- End Table with stripped rows -->
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- view Cadra ends here -->
+
+                <!-- View Meetings ends here -->
+
+                <!-- view all scanned sheets folders -->
+                <div class="scanned-sheets" id="scanned-sheets">
+                    <section class="section">
+                        <div class="iconslist" id="iconslist">
+                            <!-- to popultate folder names here -->
+                        </div>
+                    </section>
+                </div>
+                <!-- view all scanned sheets folders ends -->
+
+                <!-- filter options section starts -->
+                <div class="filters" id="filters">
+                    <div class="col-lg-12">
+
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Year Quaterly Meetings</h5>
+
+                                <!-- Bordered Tabs Justified -->
+                                <ul class="nav nav-tabs nav-tabs-bordered d-flex" id="borderedTabJustified"
+                                    role="tablist">
+                                    <li class="nav-item flex-fill" role="presentation">
+                                        <button class="nav-link w-100 active" id="home-tab" data-bs-toggle="tab"
+                                            data-bs-target="#bordered-justified-home" type="button" role="tab"
+                                            aria-controls="home" aria-selected="true">1st Quater</button>
+                                    </li>
+                                    <li class="nav-item flex-fill" role="presentation">
+                                        <button class="nav-link w-100" id="profile-tab" data-bs-toggle="tab"
+                                            data-bs-target="#bordered-justified-profile" type="button" role="tab"
+                                            aria-controls="profile" aria-selected="false">2nd Quater</button>
+                                    </li>
+                                    <li class="nav-item flex-fill" role="presentation">
+                                        <button class="nav-link w-100" id="contact-tab" data-bs-toggle="tab"
+                                            data-bs-target="#bordered-justified-contact" type="button" role="tab"
+                                            aria-controls="contact" aria-selected="false">3rd Quater</button>
+                                    </li>
+                                    <li class="nav-item flex-fill" role="presentation">
+                                        <button class="nav-link w-100" id="contact-tab" data-bs-toggle="tab"
+                                            data-bs-target="#bordered-justified-forth" type="button" role="tab"
+                                            aria-controls="contact" aria-selected="false">4th Quater</button>
+                                    </li>
+                                </ul>
+                                <div class="tab-content pt-2" id="borderedTabJustifiedContent">
+                                    <div class="tab-pane fade show active" id="bordered-justified-home" role="tabpanel"
+                                        aria-labelledby="home-tab">
+                                        <p>From: <b>January - March</b></p>
+                                        <input id="quater1" type="number" value="3" hidden>
+                                        <div class="text-center" style="margin-bottom: 1rem;">
+                                            <button type="button" id="first-quater"
+                                                class="btn btn-outline-primary">Request</button>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="bordered-justified-profile" role="tabpanel"
+                                        aria-labelledby="profile-tab">
+                                        <p>From: <b>January - June</b></p>
+                                        <input id="quater2" type="number" value="6" hidden>
+                                        <div class="text-center" style="margin-bottom: 1rem;">
+                                            <button type="button" id="sec-quater"
+                                                class="btn btn-outline-primary">Request</button>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="bordered-justified-contact" role="tabpanel"
+                                        aria-labelledby="contact-tab">
+                                        <p>From: <b>January - September</b></p>
+                                        <input id="quater3" type="number" value="9" hidden>
+                                        <div class="text-center" style="margin-bottom: 1rem;">
+                                            <button type="button" id="third-quater"
+                                                class="btn btn-outline-primary">Request</button>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="bordered-justified-forth" role="tabpanel"
+                                        aria-labelledby="contact-tab">
+                                        <p>From: <b>January - December</b></p>
+                                        <input id="quater4" type="number" value="12" hidden>
+                                        <div class="text-center" style="margin-bottom: 1rem;">
+                                            <button type="button" id="forth-quater"
+                                                class="btn btn-outline-primary">Request</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Bordered Tabs Justified -->
+
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Filter Recorded Meetings <i class="bi bi-filter"></i></h5>
+
+                                <!-- Accordion without outline borders -->
+                                <div class="accordion accordion-flush" id="accordionFlushExample">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="flush-headingOne">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#flush-collapseOne"
+                                                aria-expanded="false" aria-controls="flush-collapseOne">
+                                                Filter By Date
+                                            </button>
+                                        </h2>
+                                        <div id="flush-collapseOne" class="accordion-collapse collapse"
+                                            aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                                            <div class="input-group mb-3">
+                                                <div class="form-floating">
+                                                    <input type="date" id="start-date" class="form-control"
+                                                        placeholder="Start Date" aria-label="start">
+                                                    <label for="start">Start Date</label>
+                                                </div>
+                                                <span class="input-group-text">To</span>
+                                                <div class="form-floating">
+                                                    <input type="date" id="end-date" class="form-control"
+                                                        placeholder="End Date" aria-label="end">
+                                                    <label for="end">End Date</label>
+                                                </div>
+                                            </div>
+                                            <div class="text-center" style="margin-bottom: 1rem;">
+                                                <button type="button" id="requestDatedMeeting"
+                                                    class="btn btn-outline-primary">Request</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="flush-headingTwo">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo"
+                                                aria-expanded="false" aria-controls="flush-collapseTwo">
+                                                Filter By Title/Activity
+                                            </button>
+                                        </h2>
+                                        <div id="flush-collapseTwo" class="accordion-collapse collapse"
+                                            aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                                            {% for meeting in group_meetings %}
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="training"
+                                                    id="gridRadios1" value="{{meeting.activity}}" checked>
+                                                <label class="form-check-label" for="gridRadios1">
+                                                    {{meeting.activity.capitalize()}}
+                                                </label>
+                                            </div>
+                                            {% endfor %}
+                                            <div class="text-center" style="margin-bottom: 1rem;">
+                                                <button type="button" onclick="getMeetingByActivity()"
+                                                    class="btn btn-outline-primary">Request</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="flush-headingThree">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#flush-collapseThree"
+                                                aria-expanded="false" aria-controls="flush-collapseThree">
+                                                Filter By Facility/Venue
+                                            </button>
+                                        </h2>
+                                        <div id="flush-collapseThree" class="accordion-collapse collapse"
+                                            aria-labelledby="flush-headingThree"
+                                            data-bs-parent="#accordionFlushExample">
+                                            <div class="col-md-12">
+                                                <label for="select" class="form-label">Facility OR Venue</label>
+                                                <select class="form-select" id="select-venue"
+                                                    aria-label="Default select example">
+                                                    <option value="none">-----------------:-----------------</option>
+                                                    <option value="Flas Clinic">Flas Clinic</option>
+                                                    <option value="RFM Hospital">RFM Hospital</option>
+                                                    <option value="Mankayane Hospital">Mankayane Hospital</option>
+                                                    <option value="Mafutseni Clinic">Mafutseni Clinic</option>
+                                                    <option value="Mpuluzi Clinic">Mpuluzi Clinic</option>
+                                                    <option value="AHF Clinic">AHF Clinic</option>
+                                                    <option value="Hospice At Home">Hospice At Home</option>
+                                                    <option value="Remand Center Clinic">Remand Center Clinic</option>
+                                                    <option value="Phocweni UEDF Clinic">Phocweni UEDF Clinic</option>
+                                                    <option value="Gcina Garrison Clinic">Gcina Garrison Clinic</option>
+                                                    <option value="Zondwako Clinic">Zondwako Clinic</option>
+                                                </select>
+                                            </div>
+                                            <div class="text-center" style="margin-top: 1rem; margin-bottom: 1rem;">
+                                                <button type="button" class="btn btn-outline-primary"
+                                                    id="venue-meeting">Request</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="flush-headingThree">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#flush-collapsefour"
+                                                aria-expanded="false" aria-controls="flush-collapseThree">
+                                                Get All Meetings
+                                            </button>
+                                        </h2>
+                                        <div id="flush-collapsefour" class="accordion-collapse collapse"
+                                            aria-labelledby="flush-headingThree"
+                                            data-bs-parent="#accordionFlushExample">
+                                            <div class="col-md-12">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        id="flexSwitchCheckDefault" value="All">
+                                                    <label class="form-check-label" for="flexSwitchCheckDefault">Get All
+                                                        Meetings</label>
+                                                </div>
+                                            </div>
+                                            <div class="text-center" style="margin-top: 1rem;">
+                                                <button type="button" onclick="getAllMeeting()" id="All-MeetingsBtn"
+                                                    class="btn btn-outline-primary">Request</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Accordion without outline borders -->
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="filter">
+                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                    <li class="dropdown-header text-start">
+                                        <h6>Action</h6>
+                                    </li>
+                                    <li id="table-to-excel"><a class="dropdown-item" href="#"><i
+                                                class="bi bi-file-earmark-spreadsheet"></i>As Excel</a></li>
+                                    <li id="table-to-word"><a class="dropdown-item" href="#"><i
+                                                class="bi bi-file-earmark-pdf"></i>As PDF</a></li>
+                                    <li id="filter-print"><a class="dropdown-item" href="#"><i
+                                                class="bx bx-printer"></i>Print</a></li>
+                                </ul>
+                            </div>
+                            <div class="card-body" id="filtered-meetings" style="overflow: auto;">
+
+                                <h5 class="card-title">Meetings Filtered Data</h5>
+                                <p></p>
+                                <!-- Table with stripped rows -->
+                                <table id="meeting-table" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Venue</th>
+                                            <th scope="col">Activity</th>
+                                            <th scope="col">Time</th>
+                                            <th scope="col">Region</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- populate rows here -->
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="hidden-row" hidden>
+                                            <th colspan="3">Prepared by:</th>
+                                            <th>{{user.username}}</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                <!-- End Table with stripped rows -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- filter options sections ends -->
+
+                <!-- profile section starts here -->
+                <div class="user-profile" id="profile">
+
+                    <section class="section profile">
+                        <div class="row">
+                            <div class="col-xl-4">
+
+                                <div class="card">
+                                    <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+
+                                        <i class="bi bi-person-circle" style="font-size: 2rem;"></i>
+                                        <h2>{{user.username}} {{user.lastname}}</h2>
+                                        <h3>{{user.role}}</h3>
+                                        <div class="social-links mt-2">
+                                            <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+                                            <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-xl-8">
+
+                                <div class="card">
+                                    <div class="card-body pt-3">
+                                        <!-- Bordered Tabs -->
+                                        <ul class="nav nav-tabs nav-tabs-bordered">
+
+                                            <li class="nav-item">
+                                                <button class="nav-link active" data-bs-toggle="tab"
+                                                    data-bs-target="#profile-overview">Overview</button>
+                                            </li>
+
+                                            <li class="nav-item">
+                                                <button class="nav-link" data-bs-toggle="tab"
+                                                    data-bs-target="#profile-edit">Edit Profile</button>
+                                            </li>
+
+                                            <li class="nav-item">
+                                                <button class="nav-link" data-bs-toggle="tab"
+                                                    data-bs-target="#profile-change-password">Change Password</button>
+                                            </li>
+
+                                        </ul>
+                                        <div class="tab-content pt-2">
+
+                                            <div class="tab-pane fade show active profile-overview"
+                                                id="profile-overview">
+
+                                                <h5 class="card-title">Profile Details</h5>
+
+                                                <div class="row">
+                                                    <div class="col-lg-3 col-md-4 label ">Full Name</div>
+                                                    <div class="col-lg-9 col-md-8">{{user.username}} {{user.lastname}}
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-lg-3 col-md-4 label">Company</div>
+                                                    <div class="col-lg-9 col-md-8">{{user.company}}</div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-lg-3 col-md-4 label">Job</div>
+                                                    <div class="col-lg-9 col-md-8">{{user.role}}</div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-lg-3 col-md-4 label">Country</div>
+                                                    <div class="col-lg-9 col-md-8">{{user.country}}</div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-lg-3 col-md-4 label">Address</div>
+                                                    <div class="col-lg-9 col-md-8">{{user.address}}</div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-lg-3 col-md-4 label">Phone</div>
+                                                    <div class="col-lg-9 col-md-8">(268) {{user.phone}}</div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-lg-3 col-md-4 label">Email</div>
+                                                    <div class="col-lg-9 col-md-8">{{user.email}}</div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+
+                                                <!-- Profile Edit Form -->
+                                                <form>
+
+                                                    <div class="row mb-3">
+                                                        <label for="fullName"
+                                                            class="col-md-4 col-lg-3 col-form-label">First Name</label>
+                                                        <div class="col-md-8 col-lg-9">
+                                                            <input name="fullName" id="user-first-name" type="text"
+                                                                class="form-control" value="{{user.username}}">
+                                                            <input id="user-id" type="text" class="form-control"
+                                                                value="{{user.id}}" hidden>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-3">
+                                                        <label for="fullName"
+                                                            class="col-md-4 col-lg-3 col-form-label">Last Name</label>
+                                                        <div class="col-md-8 col-lg-9">
+                                                            <input name="fullName" id="user-last-name" type="text"
+                                                                class="form-control" value="{{user.lastname}}">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-3">
+                                                        <label for="company"
+                                                            class="col-md-4 col-lg-3 col-form-label">Company</label>
+                                                        <div class="col-md-8 col-lg-9">
+                                                            <input name="company" id="user-company-name" type="text"
+                                                                class="form-control" value="{{user.company}}">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-3">
+                                                        <label for="Job"
+                                                            class="col-md-4 col-lg-3 col-form-label">Job</label>
+                                                        <div class="col-md-8 col-lg-9">
+                                                            <input name="job" id="user-role" type="text"
+                                                                class="form-control" value="{{user.role}}">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-3">
+                                                        <label for="Country"
+                                                            class="col-md-4 col-lg-3 col-form-label">Country</label>
+                                                        <div class="col-md-8 col-lg-9">
+                                                            <input name="country" id="user-country" type="text"
+                                                                class="form-control" value="{{user.country}}">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-3">
+                                                        <label for="Address"
+                                                            class="col-md-4 col-lg-3 col-form-label">Address</label>
+                                                        <div class="col-md-8 col-lg-9">
+                                                            <input name="address" id="user-address" type="text"
+                                                                class="form-control" value="{{user.address}}">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-3">
+                                                        <label for="Phone"
+                                                            class="col-md-4 col-lg-3 col-form-label">Phone</label>
+                                                        <div class="col-md-8 col-lg-9">
+                                                            <input name="phone" id="user-phone" type="text"
+                                                                class="form-control" value="{{user.phone}}">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-3">
+                                                        <label for="Email"
+                                                            class="col-md-4 col-lg-3 col-form-label">Email</label>
+                                                        <div class="col-md-8 col-lg-9">
+                                                            <input name="email" id="user-email" type="email"
+                                                                class="form-control" value="{{user.email}}">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="text-center">
+                                                        <button type="submit" id="change-profile"
+                                                            class="btn btn-primary">Save Changes</button>
+                                                    </div>
+                                                </form>
+                                                <!-- End Profile Edit Form -->
+
+                                            </div>
+
+                                            <div class="tab-pane fade pt-3" id="profile-change-password">
+                                                <!-- Change Password Form -->
+                                                <form>
+
+                                                    <div class="row mb-3">
+                                                        <label for="currentPassword"
+                                                            class="col-md-4 col-lg-3 col-form-label">Current
+                                                            Password</label>
+                                                        <div class="col-md-8 col-lg-9">
+                                                            <input name="password" id="user-old-password"
+                                                                type="password" class="form-control" required>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-3">
+                                                        <label for="newPassword"
+                                                            class="col-md-4 col-lg-3 col-form-label">New
+                                                            Password</label>
+                                                        <div class="col-md-8 col-lg-9">
+                                                            <input name="newpassword" id="user-new-password"
+                                                                type="password" class="form-control" required>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-3">
+                                                        <label for="renewPassword"
+                                                            class="col-md-4 col-lg-3 col-form-label">Re-enter New
+                                                            Password</label>
+                                                        <div class="col-md-8 col-lg-9">
+                                                            <input name="renewpassword" id="confirm-password"
+                                                                type="password" class="form-control" required>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="text-center">
+                                                        <button type="submit" id="change-pass"
+                                                            class="btn btn-primary">Change Password</button>
+                                                    </div>
+                                                </form>
+                                                <!-- End Change Password Form -->
+
+                                            </div>
+
+                                        </div>
+                                        <!-- End Bordered Tabs -->
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <!-- profile section ends here -->
+
+                {% endblock %}
+
+            </div>
+        </section>
+
+    </main>
+    <!-- End #main -->
+
+    <!-- ======= Footer ======= -->
+    <footer id="footer" class="footer">
+        <div class="copyright">
+            &copy; Copyright <strong><span>DATAFI</span></strong>. All Rights Reserved
+        </div>
+    </footer>
+    <!-- End Footer -->
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Vendor JS Files -->
+    <script src="../static/assets/vendor/apexcharts/apexcharts.min.js"></script>
+    <script src="../static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/assets/vendor/chart.js/chart.umd.js"></script>
+    <script src="../static/assets/vendor/echarts/echarts.min.js"></script>
+    <script src="../static/assets/vendor/quill/quill.min.js"></script>
+    <script src="../static/assets/vendor/simple-datatables/simple-datatables.js"></script>
+    <script src="../static/assets/vendor/tinymce/tinymce.min.js"></script>
+    <script src="../static/assets/vendor/php-email-form/validate.js"></script>
+
+    <!-- Template Main JS File -->
+    <script src="../static/assets/js/main.js"></script>
+    <script src="../static/Script/main.js"></script>
+    <script>
+        const chooseFileBtn = document.querySelector("#choose-file"),
+            saveFile = document.getElementById('save-file'),
+            pushFile = document.getElementById('submitFileBtn')
+        const loadFile = () => {
+            let file = fileInput.files[0];
+            if (!file) return;
+            document.querySelector(".iconslist .icon #file-name").textContent = file.name;
+            document.querySelector(".iconslist .icon #save-file").classList.remove("disable");
+        }
+
+    </script>
+
+</body>
+
+</html>
